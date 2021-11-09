@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".LoginActivity"
+    android:layout_margin="15dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo_marketcolombia"
+            android:contentDescription="@string/decription_logo_mc" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_user"
+            android:textSize="20sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="3dp"/>
+
+        <EditText
+            android:id="@+id/edt_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/txt_hint_user"
+            android:autofillHints="48dp"
+            android:minHeight="48dp"
+            style="@style/App_EditTextStyle"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_password"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="3dp"
+            android:textSize="20sp"/>
+
+        <EditText
+            android:id="@+id/edt_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/txt_hint_password"
+            android:autofillHints="48dp"
+            android:minHeight="48dp"
+            style="@style/App_EditTextStyle"/>
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/txt_login"
+            android:textSize="20sp"
+            android:background="@color/colorPrimary"
+            android:elevation="15dp"/>
+
+        <TextView
+            android:id="@+id/txt_forgot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_forgot_password"
+            android:clickable="true"
+            android:textColor="@color/purple_700"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="3dp"
+            android:textAlignment="textEnd"
+            android:textSize="18sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="25dp">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:layout_weight="10"
+                android:src="@drawable/logo_facebook"/>
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:layout_weight="10"
+                android:src="@drawable/logo_google"
+                style="@style/Widget.MaterialComponents.TimePicker.ImageButton"/>
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="10"
+                android:layout_height="75dp"
+                android:src="@drawable/logo_twitter"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_visit_first"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="3dp"
+                android:textSize="15sp"/>
+            <TextView
+                android:id="@+id/txt_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_register_now"
+                android:clickable="true"
+                android:layout_marginTop="10dp"
+                android:textAlignment="textEnd"
+                android:textSize="18sp"
+                android:textColor="@color/purple_700"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Market Colombia</string>
+    <string name="txt_user">User name</string>
+    <string name="txt_hint_user">email@domain.com</string>
+    <string name="txt_password">Password</string>
+    <string name="txt_hint_password">your password</string>
+    <string name="txt_login">Login</string>
+    <string name="txt_register">Register</string>
+    <string name="decription_logo_mc">Market Colombia</string>
+    <string name="txt_term_cond">Accept terms and conditions</string>
+    <string name="txt_name">Name</string>
+    <string name="txt_lastname">Last name</string>
+    <string name="txt_email">email</string>
+    <string name="txt_cel">Number phone</string>
+    <string name="txt_forgot_password">Forgot password?</string>
+    <string name="txt_visit_first">Visit for the first time?</string>
+    <string name="txt_register_now">Register now!</string>
+    <string name="txt_welcome">Welcome to Market Colombia</string>
+    <string name="txt_already_account">Already have an account</string>
+    <string name="txt_click_register">Register</string>
+    <string name="txt_click_login">Logged in</string>
+
+
+</resources>
