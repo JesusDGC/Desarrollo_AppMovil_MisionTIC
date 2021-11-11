@@ -16,13 +16,14 @@ import android.widget.Toast;
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private CheckBox chb_term_register;
+    private TextView txt_term_register;
     private EditText edt_name_register;
     private EditText edt_lastname_register;
     private EditText edt_email_register;
     private EditText edt_password_register;
-    private EditText edt_cel_register;
     private Button btn_register;
     private TextView txt_login_register;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +31,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
 
         chb_term_register = findViewById(R.id.chb_term_register);
+        txt_term_register = findViewById(R.id.txt_term_register);
         edt_name_register = findViewById(R.id.edt_name_register);
         edt_lastname_register = findViewById(R.id.edt_lastname_register);
         edt_email_register = findViewById(R.id.edt_email_register);
         edt_password_register = findViewById(R.id.edt_password_register);
-        edt_cel_register = findViewById(R.id.edt_cel_register);
         btn_register = findViewById(R.id.btn_register);
         txt_login_register = findViewById(R.id.txt_login_register);
 
@@ -43,6 +44,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         btn_register.setOnClickListener(this);
         txt_login_register.setOnClickListener(this);
+        txt_term_register.setOnClickListener(this);
 
         chb_term_register.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -60,19 +62,26 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 String lastname = edt_lastname_register.getText().toString();
                 String email = edt_email_register.getText().toString();
                 String password = edt_password_register.getText().toString();
-                String celPhone = edt_cel_register.getText().toString();
                 Log.e("EDT_NAME", name);
                 Log.e("EDT_NAME", lastname);
                 Log.e("EDT_email", email);
                 Log.e("EDT_PASSWORD", password);
-                Log.e("CELPHONE", celPhone);
 
-                break;
-            case R.id.txt_login_register:
-                Log.e("CLICK_LOGIN_REGISTER", "CLICK_LOGIN_REGISTER");
-                Intent intent = new Intent(this, LoginActivity.class);
+                Toast.makeText(this, "Usuario registrado", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, HomeActivity.class);
                 startActivity(intent);
                 break;
+
+            case R.id.txt_login_register:
+                Intent intent_login = new Intent(this, LoginActivity.class);
+                startActivity(intent_login);
+                break;
+
+            case R.id.txt_term_register:
+                Intent intent_ter = new Intent(this, TermsAndCondActivity.class);
+                startActivity(intent_ter);
+                break;
+
         }
     }
 }

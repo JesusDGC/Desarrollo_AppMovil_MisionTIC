@@ -47,7 +47,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Log.e("EDT_CORREO", correo);
                 Log.e("EDT_CONTRASENA", contrasena);
 
-                if (correo.equals("admin@admin.co") && contrasena.equals("admin")) {
+                if (correo.equals("") || contrasena.equals("")){
+                    Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
+                } else if (correo.equals("admin@admin.co") && contrasena.equals("admin")) {
                     Toast.makeText(this, getString(R.string.txt_click_login), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, HomeActivity.class);
                     startActivity(intent);
