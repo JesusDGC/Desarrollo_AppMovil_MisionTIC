@@ -1,6 +1,7 @@
 package com.example.apppruebasmisiontic;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 
@@ -41,12 +42,18 @@ public class HomeActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_search, R.id.nav_myshopping, R.id.nav_favorites)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        //Para obtener los parametros enviados desde la actividad de login
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null && bundle.getString("user") != null){
+            Log.e("USUARIO_MENU", bundle.getString("user"));
+        }
     }
 
     @Override

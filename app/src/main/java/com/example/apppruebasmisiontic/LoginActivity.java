@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else if (correo.equals("admin@admin.co") && contrasena.equals("admin")) {
                     Toast.makeText(this, getString(R.string.txt_click_login), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, HomeActivity.class);
+                    intent.putExtra("user",correo);
                     startActivity(intent);
                 } else {
                     Toast.makeText(this, "Error iniciando sesión", Toast.LENGTH_SHORT).show();
