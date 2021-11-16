@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private FragmentHomeBinding binding;
 
-    String jsonProducts = "[{\"nombre\":\"Balón\",\"precio\":50000,\"enstock\":true},{\"nombre\":\"Guantes\",\"precio\":40000,\"enstock\":false}]";
+    String jsonProducts = "[{\"nombre\":\"Robot\",\"precio\":50000,\"enstock\":1,\"shipping_cost\":2000},{\"nombre\":\"Guantes\",\"precio\":40000,\"enstock\":0,\"shipping_cost\":0},{\"nombre\":\"Computadora\",\"precio\":4000000,\"enstock\":50,\"shipping_cost\":5000},{\"nombre\":\"Celular\",\"precio\":800000,\"enstock\":10,\"shipping_cost\":0},{\"nombre\":\"Escritorio\",\"precio\":400000,\"enstock\":5,\"shipping_cost\":10000}]";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class HomeFragment extends Fragment {
         spn_category.setAdapter(adapter);
 
         rev_products.setLayoutManager(new LinearLayoutManager(getActivity()));
-        /*Este es para utilizar un recycler view en columnas*/
+        //Este es para utilizar un recycler view en columnas
         //rev_products.setLayoutManager(new GridLayoutManager(getActivity(),2));
 
         try {
@@ -72,8 +72,8 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
 
-
-        /*String jsonProductos = "[{\"nombre\":\"Balón\",\"precio\":50000,\"enstock\":true,\"sucursales\":[{\"nombre\":\"Sucursal A\",\"area\":100,\"encargado\":{\"nombre\":\"Encargado 1\"}},{\"nombre\":\"Sucursal B\",\"area\":200,\"encargado\":{\"nombre\":\"Encargado 2\"}}]},{\"nombre\":\"Guantes\",\"precio\":40000,\"enstock\":false,\"sucursales\":[{\"nombre\":\"Sucursal C\",\"area\":50,\"encargado\":{\"nombre\":\"Encargado 3\"}},{\"nombre\":\"Sucursal D\",\"area\":45,\"encargado\":{\"nombre\":\"Encargado 4\"}}]}]";
+/*
+        String jsonProductos = "[{\"nombre\":\"Balón\",\"precio\":50000,\"enstock\":true,\"sucursales\":[{\"nombre\":\"Sucursal A\",\"area\":100,\"encargado\":{\"nombre\":\"Encargado 1\"}},{\"nombre\":\"Sucursal B\",\"area\":200,\"encargado\":{\"nombre\":\"Encargado 2\"}}]},{\"nombre\":\"Guantes\",\"precio\":40000,\"enstock\":false,\"sucursales\":[{\"nombre\":\"Sucursal C\",\"area\":50,\"encargado\":{\"nombre\":\"Encargado 3\"}},{\"nombre\":\"Sucursal D\",\"area\":45,\"encargado\":{\"nombre\":\"Encargado 4\"}}]}]";
 
         try {
             JSONArray productos = new JSONArray(jsonProductos);
@@ -93,7 +93,7 @@ public class HomeFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        */
+*/
 
 
         return root;
@@ -133,12 +133,25 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
         try {
             Log.e("POS_rec", "POS: " + position);
             String nombre = products.getJSONObject(position).getString("nombre");
-            //String categoria = products.getJSONObject(position).getString("categoria");
-            //String precio = products.getJSONObject(position).getString("precio");
+            int precio = products.getJSONObject(position).getInt("precio");
+            int stock = products.getJSONObject(position).getInt("enstock");
+            int shipping_cost = products.getJSONObject(position).getInt("shipping_cost");
+
 
             holder.txt_name_product.setText(nombre);
-            //holder.tev_categoria_producto.setText("Categoria: " + categoria);
-            //holder.tev_precio_producto.setText("$" + precio);
+            holder.txt_price_product.setText("$ " + precio);
+
+            //Stock
+            if (stock == 0)
+                holder.txt_stock.setText("No hay stock");
+            else
+                holder.txt_stock.setText(stock + " en stock");
+            //State send
+            if (shipping_cost == 0)
+                holder.txt_state_send.setText("Envio Gratis");
+            else
+                holder.txt_state_send.setText("Costo del envio: " + shipping_cost);
+
 
             //Glide.with(miActividad).load("http://goo.gl/gEgYUd").into(holder.imv_prodcuto);
         } catch (JSONException e) {
@@ -156,21 +169,23 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txt_name_product;
-        //private TextView tev_categoria_producto;
-        //private TextView tev_precio_producto;
-        //private Button btn_favorito;
-        //private Button btn_carrito;
-        //private ImageView imv_prodcuto;
+        private TextView txt_price_product;
+        private TextView txt_stock;
+        private TextView txt_state_send;
+        //private Button btn_favorite;
+        private Button btn_buy;
+        private ImageView img_product;
 
 
         public ViewHolder(View v) {
             super(v);
             txt_name_product = v.findViewById(R.id.txt_name_product);
-            //tev_categoria_producto = v.findViewById(R.id.tev_categoria_producto);
-            //tev_precio_producto = v.findViewById(R.id.tev_precio_producto);
-            //btn_favorito = v.findViewById(R.id.btn_favorito);
-            //btn_carrito = v.findViewById(R.id.btn_carrito);
-            //imv_prodcuto = v.findViewById(R.id.imv_producto);
+            txt_price_product = v.findViewById(R.id.txt_price_product);
+            txt_stock = v.findViewById(R.id.txt_stock);
+            txt_state_send = v.findViewById(R.id.txt_state_send);
+            //btn_favorite = v.findViewById(R.id.btn_favorite);
+            btn_buy = v.findViewById(R.id.btn_buy);
+            img_product = v.findViewById(R.id.img_product);
 
         }
     }
