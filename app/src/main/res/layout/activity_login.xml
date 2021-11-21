@@ -66,7 +66,8 @@
             android:text="@string/txt_login"
             android:textSize="20sp"
             android:background="@color/colorPrimary"
-            android:elevation="15dp"/>
+            android:elevation="15dp"
+            style="?android:attr/borderlessButtonStyle"/>
 
         <TextView
             android:id="@+id/txt_forgot"

@@ -1,10 +1,12 @@
 package com.example.apppruebasmisiontic;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 
+import com.example.apppruebasmisiontic.ui.util.Constantes;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -21,6 +23,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityHomeBinding binding;
+
+    private SharedPreferences myPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,11 @@ public class HomeActivity extends AppCompatActivity {
         if (bundle != null && bundle.getString("user") != null){
             Log.e("USUARIO_MENU", bundle.getString("user"));
         }
+
+        myPreference = getSharedPreferences(Constantes.PREFERENCE, MODE_PRIVATE);
+
+        String usuario = myPreference.getString("email","No hay usuario");
+
     }
 
     @Override

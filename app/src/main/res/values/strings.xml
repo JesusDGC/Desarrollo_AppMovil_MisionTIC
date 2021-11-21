@@ -37,6 +37,7 @@
 
 
     <string-array name="categories">
+        <item>Seleccionar categoria</item>
         <item>Vehicles</item>
         <item>Home</item>
         <item>Technology</item>

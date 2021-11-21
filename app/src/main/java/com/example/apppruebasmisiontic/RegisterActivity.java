@@ -1,8 +1,11 @@
 package com.example.apppruebasmisiontic;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +26,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText edt_password_register;
     private Button btn_register;
     private TextView txt_login_register;
+
+    //final es para definir una constante
+    private final int ACTIVIDAD_TERMINOS = 1;
+
 
 
     @Override
@@ -46,6 +53,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         txt_login_register.setOnClickListener(this);
         txt_term_register.setOnClickListener(this);
 
+        chb_term_register.setEnabled(false);
+
+
         chb_term_register.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -68,6 +78,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 Log.e("EDT_PASSWORD", password);
 
                 Toast.makeText(this, "Usuario registrado", Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent(this, HomeActivity.class);
                 startActivity(intent);
                 break;
@@ -79,9 +90,28 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             case R.id.txt_term_register:
                 Intent intent_ter = new Intent(this, TermsAndCondActivity.class);
-                startActivity(intent_ter);
+                //Se lanza esta actividad esperando que nos devuelva un resultado
+                startActivityForResult(intent_ter,ACTIVIDAD_TERMINOS);
                 break;
 
         }
+    }
+
+    //Se utiliza para gestionar el resultado devuelto de una actividad
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == ACTIVIDAD_TERMINOS){
+            if(resultCode == Activity.RESULT_OK){
+                chb_term_register.setChecked(true);
+                //Toast.makeText(this, "Acepte terminos y condiciones", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                chb_term_register.setChecked(false);
+            }
+
+        }
+
     }
 }

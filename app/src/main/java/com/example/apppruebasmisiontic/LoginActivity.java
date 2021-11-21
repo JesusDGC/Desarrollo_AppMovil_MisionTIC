@@ -3,6 +3,7 @@ package com.example.apppruebasmisiontic;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.apppruebasmisiontic.ui.util.Constantes;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btn_login;
@@ -18,6 +21,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText edt_password;
     private TextView txt_forgot;
     private TextView txt_register;
+
+    private SharedPreferences myPreference;
 
 
     @Override
@@ -34,6 +39,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btn_login.setOnClickListener(this);
         txt_forgot.setOnClickListener(this);
         txt_register.setOnClickListener(this);
+
+        //El modo es para asignar si solo mi aplicación puede acceder a mi archivo xml o todas las apps puedan usarlo
+        myPreference = getSharedPreferences(Constantes.PREFERENCE,MODE_PRIVATE);
+
+        String usuario = myPreference.getString("email","");
+
+        if(!usuario.equals("")){
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+            return;
+        }
     }
 
 
@@ -42,18 +58,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (view.getId()) {
             case R.id.btn_login:
 
-                String correo = edt_username.getText().toString();
-                String contrasena = edt_password.getText().toString();
-                Log.e("EDT_CORREO", correo);
-                Log.e("EDT_CONTRASENA", contrasena);
+                String email = edt_username.getText().toString();
+                String password = edt_password.getText().toString();
+                Log.e("EDT_CORREO", email);
+                Log.e("EDT_CONTRASENA", password);
 
-                if (correo.equals("") || contrasena.equals("")){
+                if (email.equals("") || password.equals("")){
                     Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
-                } else if (correo.equals("admin@admin.co") && contrasena.equals("admin")) {
-                    Toast.makeText(this, getString(R.string.txt_click_login), Toast.LENGTH_SHORT).show();
+                } else if (email.equals("admin@admin.co") && password.equals("admin")) {
+                    //Toast.makeText(this, getString(R.string.txt_click_login), Toast.LENGTH_SHORT).show();
+
+                    SharedPreferences.Editor editor = myPreference.edit();
+                    editor.putString("email", email);
+                    editor.putString("password", password);
+
+                    //Debe confirmar los cambios en el sharedPreferences para que se vean reflejados
+                    editor.commit();
+
                     Intent intent = new Intent(this, HomeActivity.class);
-                    intent.putExtra("user",correo);
+                    intent.putExtra("user",email);
                     startActivity(intent);
+
                 } else {
                     Toast.makeText(this, "Error iniciando sesión", Toast.LENGTH_SHORT).show();
                 }

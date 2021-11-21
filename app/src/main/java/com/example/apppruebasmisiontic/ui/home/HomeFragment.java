@@ -1,14 +1,18 @@
 package com.example.apppruebasmisiontic.ui.home;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,6 +29,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.apppruebasmisiontic.R;
 import com.example.apppruebasmisiontic.databinding.FragmentHomeBinding;
+import com.example.apppruebasmisiontic.ui.util.Constantes;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,7 +44,17 @@ public class HomeFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private FragmentHomeBinding binding;
 
-    String jsonProducts = "[{\"nombre\":\"Robot\",\"precio\":50000,\"enstock\":1,\"shipping_cost\":2000},{\"nombre\":\"Guantes\",\"precio\":40000,\"enstock\":0,\"shipping_cost\":0},{\"nombre\":\"Computadora\",\"precio\":4000000,\"enstock\":50,\"shipping_cost\":5000},{\"nombre\":\"Celular\",\"precio\":800000,\"enstock\":10,\"shipping_cost\":0},{\"nombre\":\"Escritorio\",\"precio\":400000,\"enstock\":5,\"shipping_cost\":10000}]";
+
+    String jsonProducts = "[{\"codigo\":\"01\",\"nombre\":\"Balón Fútbol\",\"informacion\":\"Uefa Champions League #5 Importado Original Ad\",\"precio\":244800,\"enstock\":2,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_806746-MCO48105554378_112021-O.webp\"}," +
+            "{\"codigo\":\"02\",\"nombre\":\"Bicicletas Roadmaster\",\"informacion\":\"Tornado Rin 29 24 Vel Shimano Palanca\",\"precio\":1840000,\"enstock\":243,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_2X_948611-MCO46721884405_072021-F.webp\"}," +
+            "{\"codigo\":\"03\",\"nombre\":\"Bolso Morral\",\"informacion\":\"Gw Hidratacion Vejiga 2l Todoterreno Ciclismo\",\"precio\":145000,\"enstock\":25,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_744194-MCO43441745237_092020-O.webp\"}," +
+            "{\"codigo\":\"04\",\"nombre\":\"Rodillera Ortopédica\",\"informacion\":\"Protección Rodilla Rotula Deportes 733\",\"precio\":15900,\"enstock\":425,\"shipping_cost\":9800,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_954304-MCO46388561710_062021-O.webp\"}," +
+            "{\"codigo\":\"05\",\"nombre\":\"Smart Gainer Proscience\",\"informacion\":\"Smart Gainer 3lb Proteina Sin Azucar\",\"precio\":70000,\"enstock\":425,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_990168-MCO44427501678_122020-O.webp\"}," +
+            "{\"codigo\":\"06\",\"nombre\":\"Patines\",\"informacion\":\"En Linea Profesionales Cougar Sr1\",\"precio\":1115000,\"enstock\":18,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_999867-MCO42008338809_052020-O.webp\"}," +
+            "{\"codigo\":\"07\",\"nombre\":\"Saco De Boxeo\",\"informacion\":\"Tula Mma Pro Punisher +guantes Mma Pro Caray\",\"precio\":125000,\"enstock\":274,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_705056-MCO43675680444_102020-O.webp\"}," +
+            "{\"codigo\":\"08\",\"nombre\":\"Caminadora\",\"informacion\":\"Trotadora Plegable Residencial Banda Electrica\",\"precio\":986000,\"enstock\":5,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_903360-MCO45394396285_032021-O.webp\"}," +
+            "{\"codigo\":\"09\",\"nombre\":\"Carpa Camuflada Pixel\",\"informacion\":\"2 Personas Asgard Camping 2x1.2\",\"precio\":64900,\"enstock\":12,\"shipping_cost\":9800,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_629303-MCO44022495069_112020-O.webp\"}," +
+            "{\"codigo\":\"10\",\"nombre\":\"Kit Mancuernas\",\"informacion\":\"20 Kilos 2 Pesas Maletin Transporte\",\"precio\":154000,\"enstock\":125,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_909304-MCO47650383331_092021-O.webp\"}]";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -54,7 +70,7 @@ public class HomeFragment extends Fragment {
 
         //Opcion 1: String array de la carpeta values
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.categories,
-                android.R.layout.simple_spinner_item);
+                android.R.layout.simple_spinner_dropdown_item);
 
 
         spn_category.setAdapter(adapter);
@@ -63,6 +79,22 @@ public class HomeFragment extends Fragment {
         //Este es para utilizar un recycler view en columnas
         //rev_products.setLayoutManager(new GridLayoutManager(getActivity(),2));
 
+        /*spn_category.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                txt_home.setText(spn_category.getSelectedItem().toString());
+                if(txt_home.equals("Sports and fitness")){
+                    try {
+                        JSONArray products = new JSONArray(jsonProducts);
+                        mAdapter = new ProductsAdapter(products, getActivity());
+
+                        rev_products.setAdapter(mAdapter);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });*/
         try {
             JSONArray products = new JSONArray(jsonProducts);
             mAdapter = new ProductsAdapter(products, getActivity());
@@ -111,6 +143,8 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
 
     private JSONArray products;
     private Activity myActivity;
+    private SharedPreferences myPreference;
+    private int state = 0;
 
     //Contructor
     public ProductsAdapter(JSONArray products, Activity myActivity) {
@@ -130,8 +164,11 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        myPreference = myActivity.getSharedPreferences(Constantes.PREFERENCE, Context.MODE_PRIVATE);
+
         try {
             Log.e("POS_rec", "POS: " + position);
+            String codigo = products.getJSONObject(position).getString("codigo");
             String nombre = products.getJSONObject(position).getString("nombre");
             int precio = products.getJSONObject(position).getInt("precio");
             int stock = products.getJSONObject(position).getInt("enstock");
@@ -140,6 +177,7 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
 
             holder.txt_name_product.setText(nombre);
             holder.txt_price_product.setText("$ " + precio);
+
 
             //Stock
             if (stock == 0)
@@ -151,6 +189,42 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
                 holder.txt_state_send.setText("Envio Gratis");
             else
                 holder.txt_state_send.setText("Costo del envio: " + shipping_cost);
+
+            //https://developer.android.com/guide/topics/ui/controls/button?hl=es-419
+            holder.btn_favorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //Obtengo el string de preferencias
+                    myPreference = myActivity.getSharedPreferences(Constantes.PREFERENCE, Context.MODE_PRIVATE);
+                    String stringFavorites = myPreference.getString("favorites","{\"favoritos\":[\"01\"]}");
+
+                    try {
+                        JSONArray jsonFavorites = new JSONObject(stringFavorites).getJSONArray("values");
+                        //Añado al json el codigo del objeto al que le dio favorito
+                        jsonFavorites.put(codigo);
+                        String favorites = new Gson().toJson(jsonFavorites);
+
+                        //Modifico y guardo el string en las preferencias
+                        SharedPreferences.Editor editor = myPreference.edit();
+                        editor.putString("favorites", favorites);
+
+                        //Debe confirmar los cambios en el sharedPreferences para que se vean reflejados
+                        editor.commit();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if(state == 0) {
+                        holder.btn_favorite.setImageResource(R.drawable.ic_favorite);
+                        state = 1;
+                    }
+                    else{
+                        holder.btn_favorite.setImageResource(R.drawable.ic_favorite_border);
+                        state = 0;
+                    }
+                }
+            });
 
 
             //Glide.with(miActividad).load("http://goo.gl/gEgYUd").into(holder.imv_prodcuto);
@@ -172,7 +246,7 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
         private TextView txt_price_product;
         private TextView txt_stock;
         private TextView txt_state_send;
-        //private Button btn_favorite;
+        private ImageButton btn_favorite;
         private Button btn_buy;
         private ImageView img_product;
 
@@ -183,7 +257,7 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
             txt_price_product = v.findViewById(R.id.txt_price_product);
             txt_stock = v.findViewById(R.id.txt_stock);
             txt_state_send = v.findViewById(R.id.txt_state_send);
-            //btn_favorite = v.findViewById(R.id.btn_favorite);
+            btn_favorite = v.findViewById(R.id.btn_favorite);
             btn_buy = v.findViewById(R.id.btn_buy);
             img_product = v.findViewById(R.id.img_product);
 
