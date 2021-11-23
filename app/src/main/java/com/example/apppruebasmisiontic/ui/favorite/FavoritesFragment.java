@@ -23,10 +23,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.apppruebasmisiontic.R;
 import com.example.apppruebasmisiontic.databinding.FragmentHomeBinding;
 import com.example.apppruebasmisiontic.ui.util.Constantes;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,7 +77,8 @@ public class FavoritesFragment extends Fragment {
         rev_products_fav.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         myPreference = getActivity().getSharedPreferences(Constantes.PREFERENCE, Context.MODE_PRIVATE);
-        String jsonFavorites = myPreference.getString("favorites","");
+        String jsonFavorites = myPreference.getString("favorites","{\"values\":[]}");
+
         try {
             JSONArray products = new JSONArray(jsonProducts);
             JSONArray favoriteProd = new JSONObject(jsonFavorites).getJSONArray("values");
@@ -96,14 +101,14 @@ public class FavoritesFragment extends Fragment {
 class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
 
     private JSONArray products;
-    private JSONArray favoriteProd;
+    private JSONArray jsonFavorites;
     private Activity myActivity;
-    private int state = 0;
+    private SharedPreferences myPreference;
 
     //Contructor
     public ProductsAdapter(JSONArray products, JSONArray favoriteProd, Activity myActivity) {
         this.products = products;
-        this.favoriteProd = favoriteProd;
+        this.jsonFavorites = favoriteProd;
         this.myActivity = myActivity;
     }
 
@@ -119,21 +124,36 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        //Obtengo el string de preferencias
+        myPreference = myActivity.getSharedPreferences(Constantes.PREFERENCE, Context.MODE_PRIVATE);
+        String stringFavorites = myPreference.getString("favorites","{\"values\":[]}");
+        int posTemporal = position;
         Log.e("POS_rec", "POS: " + position);
-        int tam_pro = products.length();
-        int tam_fav = favoriteProd.length();
 
-        /*try {
-            String favorite = favoriteProd.getString(position);
-            holder.txt_name_product.setText(favorite);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
-
-        for(int i=0;i<tam_fav;i++){
-            for(int j=0; j<tam_pro;j++){
+        holder.btn_favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 try {
-                    String favorite = favoriteProd.getString(position);
+                    JSONArray jsonFavorites = new JSONObject(stringFavorites).getJSONArray("values");
+                    jsonFavorites.remove(posTemporal);
+
+                    //Convierto de nuevo el JSON a string
+                    String favorites = new Gson().toJson(jsonFavorites);
+
+                    SharedPreferences.Editor editor = myPreference.edit();
+                    editor.putString("favorites", favorites);
+                    editor.commit();
+                    Toast.makeText(myActivity, "Eliminado de favoritos", Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        for(int i=0;i<jsonFavorites.length();i++){
+            for(int j=0; j<products.length();j++){
+                try {
+                    String favorite = jsonFavorites.getString(position);
                     String codigo = products.getJSONObject(j).getString("codigo");
 
                     if(favorite.equals(codigo)){
@@ -141,9 +161,15 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
                         int precio = products.getJSONObject(j).getInt("precio");
                         int stock = products.getJSONObject(j).getInt("enstock");
                         int shipping_cost = products.getJSONObject(j).getInt("shipping_cost");
+                        String imagen = products.getJSONObject(j).getString("imagen");
                         holder.txt_name_product.setText(nombre);
                         holder.txt_price_product.setText("$ " + precio);
                         holder.btn_favorite.setImageResource(R.drawable.ic_favorite);
+
+                        Glide.with(myActivity).load(imagen)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(holder.img_product);
+
                         //Stock
                         if (stock == 0)
                             holder.txt_stock.setText("No hay stock");
@@ -162,13 +188,14 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
                 }
             }
         }
+
     }
 
     //Obtiene la cantidad de objetos en el json
     @Override
     public int getItemCount() {
 //        return userModelList.size();
-        return this.favoriteProd.length();
+        return this.jsonFavorites.length();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -191,6 +218,7 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
             btn_favorite = v.findViewById(R.id.btn_favorite);
             btn_buy = v.findViewById(R.id.btn_buy);
             img_product = v.findViewById(R.id.img_product);
+            btn_favorite = v.findViewById(R.id.btn_favorite);
 
         }
     }

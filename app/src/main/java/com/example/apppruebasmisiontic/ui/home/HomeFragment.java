@@ -2,6 +2,7 @@ package com.example.apppruebasmisiontic.ui.home;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,9 +28,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.apppruebasmisiontic.R;
+import com.example.apppruebasmisiontic.RegisterProductActivity;
 import com.example.apppruebasmisiontic.databinding.FragmentHomeBinding;
 import com.example.apppruebasmisiontic.ui.util.Constantes;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -42,7 +48,10 @@ public class HomeFragment extends Fragment {
     private Spinner spn_category;
     private RecyclerView rev_products;
     private RecyclerView.Adapter mAdapter;
+    private FloatingActionButton fab;
     private FragmentHomeBinding binding;
+
+    private final int ACTIVIDAD_REGISTRAR_PRODUCTO = 1;
 
 
     String jsonProducts = "[{\"codigo\":\"01\",\"nombre\":\"Balón Fútbol\",\"informacion\":\"Uefa Champions League #5 Importado Original Ad\",\"precio\":244800,\"enstock\":2,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_806746-MCO48105554378_112021-O.webp\"}," +
@@ -65,6 +74,7 @@ public class HomeFragment extends Fragment {
         txt_home = root.findViewById(R.id.txt_home);
         spn_category = root.findViewById(R.id.spn_category);
         rev_products = root.findViewById(R.id.rev_products);
+        fab = root.findViewById(R.id.fab);
 
         txt_home.setText("This is home fragment");
 
@@ -126,7 +136,17 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
 */
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Agregar Nuevo Producto", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
 
+                Intent intent = new Intent(getActivity(), RegisterProductActivity.class);
+                getActivity().startActivityForResult(intent,ACTIVIDAD_REGISTRAR_PRODUCTO);
+
+            }
+        });
 
         return root;
     }
@@ -136,6 +156,24 @@ public class HomeFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == ACTIVIDAD_REGISTRAR_PRODUCTO){
+            if(resultCode == Activity.RESULT_OK) {
+                Log.e("CLICK_SAVE", "CLICK_SAVE");
+                txt_home.setText("Producto agregado correctamente");
+            }
+            else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.e("CLICK_CANCEL", "CLICK_CANCEL");
+                txt_home.setText("Producto cancelado ");
+            }
+            else
+                txt_home.setText("No se a agregado el producto");
+        }
+
+    }
 }
 
 
@@ -144,7 +182,6 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
     private JSONArray products;
     private Activity myActivity;
     private SharedPreferences myPreference;
-    private int state = 0;
 
     //Contructor
     public ProductsAdapter(JSONArray products, Activity myActivity) {
@@ -164,12 +201,15 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        //Obtengo el string de preferencias
         myPreference = myActivity.getSharedPreferences(Constantes.PREFERENCE, Context.MODE_PRIVATE);
+        String stringFavorites = myPreference.getString("favorites","{\"values\":[]}");
 
         try {
             Log.e("POS_rec", "POS: " + position);
             String codigo = products.getJSONObject(position).getString("codigo");
             String nombre = products.getJSONObject(position).getString("nombre");
+            String imagen = products.getJSONObject(position).getString("imagen");
             int precio = products.getJSONObject(position).getInt("precio");
             int stock = products.getJSONObject(position).getInt("enstock");
             int shipping_cost = products.getJSONObject(position).getInt("shipping_cost");
@@ -178,6 +218,15 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
             holder.txt_name_product.setText(nombre);
             holder.txt_price_product.setText("$ " + precio);
 
+            if(stringFavorites.indexOf(codigo) == -1){
+                holder.btn_favorite.setImageResource(R.drawable.ic_favorite_border);
+            }
+            else{
+                holder.btn_favorite.setImageResource(R.drawable.ic_favorite);
+            }
+            Glide.with(myActivity).load(imagen)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.img_product);
 
             //Stock
             if (stock == 0)
@@ -195,33 +244,43 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
 
-                    //Obtengo el string de preferencias
-                    myPreference = myActivity.getSharedPreferences(Constantes.PREFERENCE, Context.MODE_PRIVATE);
-                    String stringFavorites = myPreference.getString("favorites","{\"favoritos\":[\"01\"]}");
-
                     try {
                         JSONArray jsonFavorites = new JSONObject(stringFavorites).getJSONArray("values");
-                        //Añado al json el codigo del objeto al que le dio favorito
-                        jsonFavorites.put(codigo);
-                        String favorites = new Gson().toJson(jsonFavorites);
 
-                        //Modifico y guardo el string en las preferencias
-                        SharedPreferences.Editor editor = myPreference.edit();
-                        editor.putString("favorites", favorites);
+                        if(stringFavorites.indexOf(codigo) == -1){
+                            //Añado al json el codigo del objeto al que le dio favorito
+                            jsonFavorites.put(codigo);
+                            //Convierto de nuevo el JSON a string
+                            String favorites = new Gson().toJson(jsonFavorites);
 
-                        //Debe confirmar los cambios en el sharedPreferences para que se vean reflejados
-                        editor.commit();
+                            //Modifico y guardo el string en las preferencias
+                            SharedPreferences.Editor editor = myPreference.edit();
+                            editor.putString("favorites", favorites);
+
+                            //Debe confirmar los cambios en el sharedPreferences para que se vean reflejados
+                            editor.commit();
+
+                            holder.btn_favorite.setImageResource(R.drawable.ic_favorite);
+                        }
+                        else{
+                            for(int i= 0; i < jsonFavorites.length(); i++){
+
+                                if(jsonFavorites.getString(i).equals(codigo)){
+                                    jsonFavorites.remove(i);
+
+                                    //Convierto de nuevo el JSON a string
+                                    String favorites = new Gson().toJson(jsonFavorites);
+
+                                    SharedPreferences.Editor editor = myPreference.edit();
+                                    editor.putString("favorites", favorites);
+                                    editor.commit();
+                                }
+                            }
+                            holder.btn_favorite.setImageResource(R.drawable.ic_favorite_border);
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
-                    if(state == 0) {
-                        holder.btn_favorite.setImageResource(R.drawable.ic_favorite);
-                        state = 1;
-                    }
-                    else{
-                        holder.btn_favorite.setImageResource(R.drawable.ic_favorite_border);
-                        state = 0;
                     }
                 }
             });

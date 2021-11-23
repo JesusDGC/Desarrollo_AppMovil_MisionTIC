@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/txt_welcome"
-        android:textSize="28sp"
+        android:textSize="25sp"
         android:layout_margin="10dp"
         android:textAlignment="center"/>
 
@@ -24,7 +24,7 @@
 
         <ImageView
             android:layout_width="250dp"
-            android:layout_height="100dp"
+            android:layout_height="90dp"
             android:src="@drawable/logo_marketcolombia_hor"
             android:contentDescription="@string/decription_logo_mc" />
     </LinearLayout>
@@ -157,19 +157,19 @@
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="75dp"
+                android:layout_height="65dp"
                 android:layout_weight="10"
                 android:src="@drawable/logo_facebook"/>
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="75dp"
+                android:layout_height="65dp"
                 android:layout_weight="10"
                 android:src="@drawable/logo_google"
                 style="@style/Widget.MaterialComponents.TimePicker.ImageButton"/>
             <ImageView
                 android:layout_width="0dp"
                 android:layout_weight="10"
-                android:layout_height="75dp"
+                android:layout_height="65dp"
                 android:src="@drawable/logo_twitter"/>
         </LinearLayout>
 

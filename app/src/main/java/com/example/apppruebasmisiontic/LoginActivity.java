@@ -91,7 +91,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.txt_forgot:
                 Log.e("CLICK_FORGOT_PASSWORD", "CLICK_FORGOT_PASSWORD");
-                Toast.makeText(this, "change password", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
