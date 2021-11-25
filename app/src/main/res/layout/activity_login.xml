@@ -37,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/txt_hint_user"
+            android:inputType="textEmailAddress"
             android:autofillHints="48dp"
             android:minHeight="48dp"
             style="@style/App_EditTextStyle"/>
@@ -54,6 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/txt_hint_password"
+            android:inputType="textPassword"
             android:autofillHints="48dp"
             android:minHeight="48dp"
             style="@style/App_EditTextStyle"/>

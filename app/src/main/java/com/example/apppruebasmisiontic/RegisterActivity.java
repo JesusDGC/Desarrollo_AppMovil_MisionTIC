@@ -1,11 +1,11 @@
 package com.example.apppruebasmisiontic;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +15,14 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.security.Provider;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -29,6 +37,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     //final es para definir una constante
     private final int ACTIVIDAD_TERMINOS = 1;
+
+    //Firebase
+    private FirebaseAuth mAuth;
 
 
 
@@ -46,16 +57,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         btn_register = findViewById(R.id.btn_register);
         txt_login_register = findViewById(R.id.txt_login_register);
 
-        //Desabilito el boton de registrar
-        btn_register.setEnabled(false);
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
+
+        //Desabilito el boton de registrar y el checkbox
+        btn_register.setEnabled(false);
+        chb_term_register.setEnabled(false);
+
+        //Escucha de Click
         btn_register.setOnClickListener(this);
         txt_login_register.setOnClickListener(this);
         txt_term_register.setOnClickListener(this);
 
-        chb_term_register.setEnabled(false);
-
-
+        //Escucha cada cambio del checkbox
         chb_term_register.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -68,6 +83,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_register:
+
                 String name = edt_name_register.getText().toString();
                 String lastname = edt_lastname_register.getText().toString();
                 String email = edt_email_register.getText().toString();
@@ -76,11 +92,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 Log.e("EDT_NAME", lastname);
                 Log.e("EDT_email", email);
                 Log.e("EDT_PASSWORD", password);
-
-                Toast.makeText(this, "Usuario registrado", Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(this, HomeActivity.class);
-                startActivity(intent);
+                if (email.equals("") || password.equals("") || name.equals("") || lastname.equals("")){
+                    Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
+                }
+                else if (password.length() < 8){
+                    Toast.makeText(this, "Constraseña debe tener minimo 8 caracteres", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    registerUserFirebaseEmailAndPassword(email,password,name,lastname);
+                }
                 break;
 
             case R.id.txt_login_register:
@@ -95,6 +115,46 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
 
         }
+    }
+
+    public void registerUserFirebaseEmailAndPassword(String email, String password,String name, String lastname){
+        mAuth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.e("AUTH", "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            //updateUI(user) // Actualizar interfaz
+
+                            //-------------------------------------------------------------------------------
+                            //NO ME ENTRA
+                            user.sendEmailVerification()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d("SEND_EMAIL", "Email sent.");
+                                            }
+                                        }
+                                    });
+                            Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+                            intent.putExtra("email", email);
+                            intent.putExtra("name",name);
+                            intent.putExtra("lastname",lastname);
+                            intent.putExtra("provider", "BASIC");
+                            startActivity(intent);
+                        }
+                        else{
+                            Log.e("AUTH", "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(RegisterActivity.this, "Authentication failed.",Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                            edt_email_register.setText("");
+                            edt_password_register.setText("");
+                        }
+                    }
+                });
     }
 
     //Se utiliza para gestionar el resultado devuelto de una actividad

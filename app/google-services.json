@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "535741425210",
+    "project_id": "market-colombia",
+    "storage_bucket": "market-colombia.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:535741425210:android:3a1004b1941b5920f4f703",
+        "android_client_info": {
+          "package_name": "com.example.apppruebasmisiontic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "535741425210-qdpgfn95lct98aqffutai9vtfhgead79.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmvpaDXYhdnhLMmDE1j_ghS_C6MJxpAeE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "535741425210-qdpgfn95lct98aqffutai9vtfhgead79.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.apppruebasmisiontic.ui.util.Constantes;
@@ -31,6 +32,9 @@ public class HomeActivity extends AppCompatActivity {
     private SharedPreferences myPreference;
     private Activity miActividad;
 
+    //private TextView name_user;
+    //private TextView email_user;
+
 
 
     @Override
@@ -38,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         miActividad = this;
+        myPreference = getSharedPreferences(Constantes.PREFERENCE, MODE_PRIVATE);
 
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -71,15 +76,47 @@ public class HomeActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        //Para obtener los parametros enviados desde la actividad de login
+        //name_user = findViewById(R.id.name_user);
+        //email_user = findViewById(R.id.email_user);
+
+        //Para obtener los parametros enviados desde otra actividad
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null && bundle.getString("user") != null){
+        //PARAMETROS ENVIADOS DESDE LOGIN
+        if (bundle != null && bundle.getString("email") != null && bundle.getString("provider") != null){
             Log.e("USUARIO_MENU", bundle.getString("user"));
+            SharedPreferences.Editor editor = myPreference.edit();
+            editor.putString("email", bundle.getString("email"));
+            editor.putString("provider", bundle.getString("provider"));
+            Log.e("LOGIN_HOME", bundle.getString("email"));
+            Log.e("LOGIN_HOME", bundle.getString("provider"));
+
+            editor.commit();
+            //email_user.setText(bundle.getString("email"));
+        }
+        //PARAMETROS ENVIADOS DESDE REGISTER
+        if (bundle != null && bundle.getString("name") != null && bundle.getString("lastname") != null && bundle.getString("email") != null && bundle.getString("provider") != null){
+
+            SharedPreferences.Editor editor = myPreference.edit();
+            editor.putString("email", bundle.getString("email"));
+            editor.putString("name_user", bundle.getString("name"));
+            editor.putString("lastname_user", bundle.getString("lastname"));
+            editor.putString("provider", bundle.getString("provider"));
+            Log.e("REGISTER_HOME", bundle.getString("email"));
+            Log.e("REGISTER_HOME", bundle.getString("name"));
+            Log.e("REGISTER_HOME", bundle.getString("lastname"));
+            Log.e("REGISTER_HOME", bundle.getString("provider"));
+
+            //Debe confirmar los cambios en el sharedPreferences para que se vean reflejados
+            editor.commit();
+            //email_user.setText(bundle.getString("email"));
+            //name_user.setText(bundle.getString("name") + bundle.getString("lastname"));
         }
 
-        myPreference = getSharedPreferences(Constantes.PREFERENCE, MODE_PRIVATE);
 
-        String usuario = myPreference.getString("email","No hay usuario");
+        //email_user.setText("jedaga123@gmail.com");
+        //name_user.setText("Jesus Garcia");
+
+        //String usuario = myPreference.getString("email","No hay usuario");
 
     }
 
