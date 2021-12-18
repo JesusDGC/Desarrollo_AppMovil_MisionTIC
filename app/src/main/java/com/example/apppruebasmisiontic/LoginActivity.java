@@ -13,12 +13,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.apppruebasmisiontic.ui.util.Constantes;
+import com.example.apppruebasmisiontic.util.Constantes;
+import com.example.apppruebasmisiontic.util.Utilidades;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -44,6 +48,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         txt_forgot = findViewById(R.id.txt_forgot);
         txt_register = findViewById(R.id.txt_register);
 
+        myPreference = getSharedPreferences(Constantes.PREFERENCE, MODE_PRIVATE);
+
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
@@ -52,25 +58,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         txt_register.setOnClickListener(this);
 
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        /*FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             return;
         }
-
+*/
         //Se utilizaba SharedPreferences para guardar el usuario logeado, sera cambiado por firebase
-        /*
-        //El modo es para asignar si solo mi aplicación puede acceder a mi archivo xml o todas las apps puedan usarlo
-        //myPreference = getSharedPreferences(Constantes.PREFERENCE,MODE_PRIVATE);
 
-        //String usuario = myPreference.getString("email","");
+        //El modo es para asignar si solo mi aplicación puede acceder a mi archivo xml o todas las apps puedan usarlo
+        myPreference = getSharedPreferences(Constantes.PREFERENCE,MODE_PRIVATE);
+
+        String usuario = myPreference.getString("email","");
 
         if(!usuario.equals("")){
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             return;
-        }*/
+        }
     }
 
 
@@ -88,26 +94,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    log_in(email,password);
+                    inicioSesionFirestore(email, Utilidades.md5(password));
+                    //log_inFirebaseEmailPassword(email,password);
                 }
-                /*
-                else if (email.equals("admin@admin.co") && password.equals("admin")) {
-                    //Toast.makeText(this, getString(R.string.txt_click_login), Toast.LENGTH_SHORT).show();
 
-                    SharedPreferences.Editor editor = myPreference.edit();
-                    editor.putString("email", email);
-                    editor.putString("password", password);
-
-                    //Debe confirmar los cambios en el sharedPreferences para que se vean reflejados
-                    editor.commit();
-
-                    Intent intent = new Intent(this, HomeActivity.class);
-                    intent.putExtra("user",email);
-                    startActivity(intent);
-
-                } else {
-                    Toast.makeText(this, "Error iniciando sesión", Toast.LENGTH_SHORT).show();
-                }*/
                 break;
             case R.id.txt_register:
                 Log.e("CLICK_REGISTER", "CLICK_REGISTER");
@@ -121,7 +111,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public void log_in(String email, String password){
+    public void inicioSesionFirestore(String correo, String contrasena) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("usuarios").document(correo);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.e("TAG", "DocumentSnapshot data: " + document.getData());
+                        String fireContrasena = document.getData().get("contrasena").toString();
+                        if (contrasena.equals(fireContrasena)) {
+                            toLogin(correo, contrasena);
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Correo o contraseña incorrecta", Toast.LENGTH_SHORT).show();
+                        Log.e("TAG", "No such document");
+                        edt_username.setText("");
+                        edt_password.setText("");
+                    }
+                } else {
+                    Log.e("TAG", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void log_inFirebaseEmailPassword(String email, String password){
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -146,5 +164,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     }
                 });
+    }
+
+    public void toLogin(String email, String password) {
+
+        SharedPreferences.Editor editor = myPreference.edit();
+
+        editor.putString("email", email);
+        editor.putString("password", password);
+
+        editor.commit();
+
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra("email", email);
+        finish();
+        startActivity(intent);
     }
 }

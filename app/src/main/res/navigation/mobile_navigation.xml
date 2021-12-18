@@ -19,13 +19,14 @@
 
     <fragment
         android:id="@+id/nav_myshopping"
-        android:name="com.example.apppruebasmisiontic.ui.slideshow.SlideshowFragment"
+        android:name="com.example.apppruebasmisiontic.ui.cartbuy.CartBuyFragment"
         android:label="@string/menu_myshopping"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_cart_buy" />
 
     <fragment
         android:id="@+id/nav_favorites"
         android:name="com.example.apppruebasmisiontic.ui.favorite.FavoritesFragment"
         android:label="@string/menu_favorites"
         tools:layout="@layout/fragment_favorites" />
+
 </navigation>

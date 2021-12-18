@@ -16,13 +16,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.apppruebasmisiontic.util.Utilidades;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.security.Provider;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -60,7 +66,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-
         //Desabilito el boton de registrar y el checkbox
         btn_register.setEnabled(false);
         chb_term_register.setEnabled(false);
@@ -88,10 +93,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 String lastname = edt_lastname_register.getText().toString();
                 String email = edt_email_register.getText().toString();
                 String password = edt_password_register.getText().toString();
-                Log.e("EDT_NAME", name);
-                Log.e("EDT_NAME", lastname);
-                Log.e("EDT_email", email);
-                Log.e("EDT_PASSWORD", password);
+
+
                 if (email.equals("") || password.equals("") || name.equals("") || lastname.equals("")){
                     Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
                 }
@@ -99,7 +102,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     Toast.makeText(this, "Constraseña debe tener minimo 8 caracteres", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    registerUserFirebaseEmailAndPassword(email,password,name,lastname);
+                    //registerUserFirebaseEmailAndPassword(email,password,name,lastname);
+                    registroUsuarioFirestore(name, lastname, email, Utilidades.md5(password));
                 }
                 break;
 
@@ -117,6 +121,32 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    public void registroUsuarioFirestore(String nombre, String apellido, String correo, String contrasena) {
+        // Create a new user with a first and last name
+        Map<String, Object> usuario = new HashMap<>();
+        usuario.put("nombre", nombre);
+        usuario.put("apellido", apellido);
+        usuario.put("correo", correo);
+        usuario.put("contrasena", contrasena);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("usuarios").document(correo)
+                .set(usuario)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("TAG", "DocumentSnapshot successfully written!");
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("TAG", "Error writing document", e);
+                    }
+                });
+    }
+
     public void registerUserFirebaseEmailAndPassword(String email, String password,String name, String lastname){
         mAuth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -128,8 +158,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             FirebaseUser user = mAuth.getCurrentUser();
                             //updateUI(user) // Actualizar interfaz
 
+                            //finalizo la actividad
+                            finish();
                             //-------------------------------------------------------------------------------
-                            //NO ME ENTRA
+
                             user.sendEmailVerification()
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
@@ -139,12 +171,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                             }
                                         }
                                     });
-                            Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
-                            intent.putExtra("email", email);
-                            intent.putExtra("name",name);
-                            intent.putExtra("lastname",lastname);
-                            intent.putExtra("provider", "BASIC");
-                            startActivity(intent);
+
+
+                            //Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+                            //intent.putExtra("email", email);
+                            //intent.putExtra("name",name);
+                            //intent.putExtra("lastname",lastname);
+                            //intent.putExtra("provider", "BASIC");
+                            //startActivity(intent);
                         }
                         else{
                             Log.e("AUTH", "createUserWithEmail:failure", task.getException());

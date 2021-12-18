@@ -21,7 +21,7 @@
         android:src="@drawable/avatar_perfil"/>
 
     <TextView
-        android:id="@+id/name_user"
+        android:id="@+id/txt_name_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -30,7 +30,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/email_user"
+        android:id="@+id/txt_email_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nav_header_subtitle"

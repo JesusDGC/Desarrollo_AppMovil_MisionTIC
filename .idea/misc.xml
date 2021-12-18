@@ -3,6 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout-land/activity_login.xml" value="0.15" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout-land/activity_register.xml" value="0.16" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout-land/activity_terms_and_cond.xml" value="0.13489583333333333" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/activity_login.xml" value="0.12864583333333332" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/activity_mapa.xml" value="0.20416666666666666" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/activity_prod_information.xml" value="0.1" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/activity_register.xml" value="0.12864583333333332" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/activity_register_product.xml" value="0.18" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/activity_terms_and_cond.xml" value="0.16983695652173914" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/fragment_cart_buy.xml" value="0.18" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/fragment_favorites.xml" value="0.1" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/fragment_gallery.xml" value="0.1" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/fragment_home.xml" value="0.18" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/fragment_slideshow.xml" value="0.1" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/nav_header_home.xml" value="0.1" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/row_item_addcart.xml" value="0.22" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/layout/row_item_products.xml" value="0.20416666666666666" />
+        <entry key="..\:/Documentos/Desarrollo_AppMovil_MisionTIC/app/src/main/res/menu/activity_main_drawer.xml" value="0.25" />
         <entry key="..\:/Documentos/Jesus/MisionTIC/Ciclo4/AplicacionesMoviles/AppClase/app/src/main/res/drawable/borde_redondeado.xml" value="0.1" />
         <entry key="..\:/Documentos/Jesus/MisionTIC/Ciclo4/AplicacionesMoviles/AppClase/app/src/main/res/drawable/ic_menu_camera.xml" value="0.14054054054054055" />
         <entry key="..\:/Documentos/Jesus/MisionTIC/Ciclo4/AplicacionesMoviles/AppClase/app/src/main/res/drawable/ic_menu_favorite.xml" value="0.19054054054054054" />
