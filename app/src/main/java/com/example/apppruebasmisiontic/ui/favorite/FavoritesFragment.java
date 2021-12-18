@@ -1,8 +1,5 @@
 package com.example.apppruebasmisiontic.ui.favorite;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,15 +18,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.apppruebasmisiontic.R;
-import com.example.apppruebasmisiontic.databinding.FragmentHomeBinding;
-import com.example.apppruebasmisiontic.ui.util.Constantes;
+import com.example.apppruebasmisiontic.util.Constantes;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -45,19 +40,8 @@ public class FavoritesFragment extends Fragment {
 
     private SharedPreferences myPreference;
 
-
-    String jsonProducts = "[{\"codigo\":\"01\",\"nombre\":\"Balón Fútbol\",\"informacion\":\"Uefa Champions League #5 Importado Original Ad\",\"precio\":244800,\"enstock\":2,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_806746-MCO48105554378_112021-O.webp\"}," +
-            "{\"codigo\":\"02\",\"nombre\":\"Bicicletas Roadmaster\",\"informacion\":\"Tornado Rin 29 24 Vel Shimano Palanca\",\"precio\":1840000,\"enstock\":243,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_2X_948611-MCO46721884405_072021-F.webp\"}," +
-            "{\"codigo\":\"03\",\"nombre\":\"Bolso Morral\",\"informacion\":\"Gw Hidratacion Vejiga 2l Todoterreno Ciclismo\",\"precio\":145000,\"enstock\":25,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_744194-MCO43441745237_092020-O.webp\"}," +
-            "{\"codigo\":\"04\",\"nombre\":\"Rodillera Ortopédica\",\"informacion\":\"Protección Rodilla Rotula Deportes 733\",\"precio\":15900,\"enstock\":425,\"shipping_cost\":9800,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_954304-MCO46388561710_062021-O.webp\"}," +
-            "{\"codigo\":\"05\",\"nombre\":\"Smart Gainer Proscience\",\"informacion\":\"Smart Gainer 3lb Proteina Sin Azucar\",\"precio\":70000,\"enstock\":425,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_990168-MCO44427501678_122020-O.webp\"}," +
-            "{\"codigo\":\"06\",\"nombre\":\"Patines\",\"informacion\":\"En Linea Profesionales Cougar Sr1\",\"precio\":1115000,\"enstock\":18,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_999867-MCO42008338809_052020-O.webp\"}," +
-            "{\"codigo\":\"07\",\"nombre\":\"Saco De Boxeo\",\"informacion\":\"Tula Mma Pro Punisher +guantes Mma Pro Caray\",\"precio\":125000,\"enstock\":274,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_705056-MCO43675680444_102020-O.webp\"}," +
-            "{\"codigo\":\"08\",\"nombre\":\"Caminadora\",\"informacion\":\"Trotadora Plegable Residencial Banda Electrica\",\"precio\":986000,\"enstock\":5,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_903360-MCO45394396285_032021-O.webp\"}," +
-            "{\"codigo\":\"09\",\"nombre\":\"Carpa Camuflada Pixel\",\"informacion\":\"2 Personas Asgard Camping 2x1.2\",\"precio\":64900,\"enstock\":12,\"shipping_cost\":9800,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_629303-MCO44022495069_112020-O.webp\"}," +
-            "{\"codigo\":\"10\",\"nombre\":\"Kit Mancuernas\",\"informacion\":\"20 Kilos 2 Pesas Maletin Transporte\",\"precio\":154000,\"enstock\":125,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_909304-MCO47650383331_092021-O.webp\"}]";
-
-    //String jsonFavorites = "{\"favoritos\":[\"02\",\"05\",\"08\",\"10\"]}";
+    private JSONArray favoritos;
+    private final String SHARED_FAVORITOS = "FAVORITOS";
 
     public static FavoritesFragment newInstance() {
         return new FavoritesFragment();
@@ -77,13 +61,12 @@ public class FavoritesFragment extends Fragment {
         rev_products_fav.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         myPreference = getActivity().getSharedPreferences(Constantes.PREFERENCE, Context.MODE_PRIVATE);
-        String jsonFavorites = myPreference.getString("favorites","{\"values\":[]}");
+
 
         try {
-            JSONArray products = new JSONArray(jsonProducts);
-            JSONArray favoriteProd = new JSONObject(jsonFavorites).getJSONArray("values");
+            favoritos = new JSONArray(myPreference.getString(SHARED_FAVORITOS, "[]"));
 
-            mAdapter = new ProductsAdapter(products,favoriteProd,getActivity());
+            mAdapter = new ProductsAdapter(favoritos,getActivity());
             rev_products_fav.setAdapter(mAdapter);
 
         } catch (JSONException e) {
@@ -100,18 +83,44 @@ public class FavoritesFragment extends Fragment {
 
 class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
 
-    private JSONArray products;
     private JSONArray jsonFavorites;
     private Activity myActivity;
     private SharedPreferences myPreference;
 
+    private JSONArray favoritos;
+    private final String SHARED_FAVORITOS = "FAVORITOS";
+
     //Contructor
-    public ProductsAdapter(JSONArray products, JSONArray favoriteProd, Activity myActivity) {
-        this.products = products;
+    public ProductsAdapter(JSONArray favoriteProd, Activity myActivity) {
         this.jsonFavorites = favoriteProd;
         this.myActivity = myActivity;
+
+        this.myPreference = myActivity.getSharedPreferences(Constantes.PREFERENCE, Context.MODE_PRIVATE);
+        try {
+            this.favoritos = new JSONArray(myPreference.getString(SHARED_FAVORITOS, "[]"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
+
+    public void eliminarProductoFavorito(String codigo) {
+        for (int i = 0; i < favoritos.length(); i++) {
+            try {
+                JSONObject favorito = favoritos.getJSONObject(i);
+
+                if (favorito.getString("codigo").equals(codigo)) {
+                    favoritos.remove(i);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        SharedPreferences.Editor editor = myPreference.edit();
+        editor.putString(SHARED_FAVORITOS, favoritos.toString());
+        editor.commit();
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -126,68 +135,44 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
 
         //Obtengo el string de preferencias
         myPreference = myActivity.getSharedPreferences(Constantes.PREFERENCE, Context.MODE_PRIVATE);
-        String stringFavorites = myPreference.getString("favorites","{\"values\":[]}");
-        int posTemporal = position;
-        Log.e("POS_rec", "POS: " + position);
 
-        holder.btn_favorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    JSONArray jsonFavorites = new JSONObject(stringFavorites).getJSONArray("values");
-                    jsonFavorites.remove(posTemporal);
 
-                    //Convierto de nuevo el JSON a string
-                    String favorites = new Gson().toJson(jsonFavorites);
+        try {
+            String codigo = jsonFavorites.getJSONObject(position).getString("codigo");
+            String nombre = jsonFavorites.getJSONObject(position).getString("nombre");
+            String imagen = jsonFavorites.getJSONObject(position).getString("imagen");
+            int precio = jsonFavorites.getJSONObject(position).getInt("precio");
+            int stock = jsonFavorites.getJSONObject(position).getInt("enstock");
 
-                    SharedPreferences.Editor editor = myPreference.edit();
-                    editor.putString("favorites", favorites);
-                    editor.commit();
+            holder.txt_name_product.setText(nombre);
+            holder.txt_price_product.setText("$ " + precio);
+
+
+            holder.btn_favorite.setImageDrawable(myActivity.getDrawable(R.drawable.ic_favorite));
+
+
+            Glide.with(myActivity).load(imagen)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.img_product);
+
+            //Stock
+            if (stock == 0)
+                holder.txt_stock.setText("No hay stock");
+            else
+                holder.txt_stock.setText(stock + " en stock");
+
+
+            holder.btn_favorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    eliminarProductoFavorito(codigo);
                     Toast.makeText(myActivity, "Eliminado de favoritos", Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-        });
-
-        for(int i=0;i<jsonFavorites.length();i++){
-            for(int j=0; j<products.length();j++){
-                try {
-                    String favorite = jsonFavorites.getString(position);
-                    String codigo = products.getJSONObject(j).getString("codigo");
-
-                    if(favorite.equals(codigo)){
-                        String nombre = products.getJSONObject(j).getString("nombre");
-                        int precio = products.getJSONObject(j).getInt("precio");
-                        int stock = products.getJSONObject(j).getInt("enstock");
-                        int shipping_cost = products.getJSONObject(j).getInt("shipping_cost");
-                        String imagen = products.getJSONObject(j).getString("imagen");
-                        holder.txt_name_product.setText(nombre);
-                        holder.txt_price_product.setText("$ " + precio);
-                        holder.btn_favorite.setImageResource(R.drawable.ic_favorite);
-
-                        Glide.with(myActivity).load(imagen)
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(holder.img_product);
-
-                        //Stock
-                        if (stock == 0)
-                            holder.txt_stock.setText("No hay stock");
-                        else
-                            holder.txt_stock.setText(stock + " en stock");
-                        //State send
-                        if (shipping_cost == 0)
-                            holder.txt_state_send.setText("Envio Gratis");
-                        else
-                            holder.txt_state_send.setText("Costo del envio: " + shipping_cost);
-
-                    }
-                    //Glide.with(miActividad).load("http://goo.gl/gEgYUd").into(holder.imv_prodcuto);
-                } catch (JSONException e) {
-                    holder.txt_name_product.setText("error");
-                }
-            }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
 
     }
 
@@ -214,11 +199,10 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
             txt_name_product = v.findViewById(R.id.txt_name_product);
             txt_price_product = v.findViewById(R.id.txt_price_product);
             txt_stock = v.findViewById(R.id.txt_stock);
-            txt_state_send = v.findViewById(R.id.txt_state_send);
+            //txt_state_send = v.findViewById(R.id.txt_state_send);
             btn_favorite = v.findViewById(R.id.btn_favorite);
             btn_buy = v.findViewById(R.id.btn_buy);
             img_product = v.findViewById(R.id.img_product);
-            btn_favorite = v.findViewById(R.id.btn_favorite);
 
         }
     }

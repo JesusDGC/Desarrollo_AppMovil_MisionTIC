@@ -1,20 +1,23 @@
 package com.example.apppruebasmisiontic;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.apppruebasmisiontic.ui.util.Constantes;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.apppruebasmisiontic.util.Constantes;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -22,50 +25,41 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.apppruebasmisiontic.databinding.ActivityHomeBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HomeActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private ActivityHomeBinding binding;
+    //private ActivityHomeBinding binding;
+    private Activity miactividad;
+
+    DrawerLayout drawer;
 
     private SharedPreferences myPreference;
     private Activity miActividad;
 
-    //private TextView name_user;
-    //private TextView email_user;
+    private String email;
+    private String nombreUser;
 
-
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        drawer = findViewById(R.id.drawer_layout);
 
         miActividad = this;
         myPreference = getSharedPreferences(Constantes.PREFERENCE, MODE_PRIVATE);
 
-        binding = ActivityHomeBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.appBarHome.toolbar);
-        /*binding.appBarHome.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        setSupportActionBar(toolbar);
+        NavigationView navigationView = findViewById(R.id.nav_view);
 
-                Toast.makeText(miActividad, "boton flotante pulsado", Toast.LENGTH_SHORT).show();
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
-
-                Intent intent = new Intent(HomeActivity.this, RegisterProductActivity.class);
-
-                startActivity(intent);
-                //startActivityForResult(intent,ACTIVIDAD_REGISTRAR_PRODUCTO);
-                //Toast.makeText(miActividad, "boton flotante pulsado", Toast.LENGTH_SHORT).show();
-
-            }
-        });*/
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -82,43 +76,76 @@ public class HomeActivity extends AppCompatActivity {
         //Para obtener los parametros enviados desde otra actividad
         Bundle bundle = getIntent().getExtras();
         //PARAMETROS ENVIADOS DESDE LOGIN
-        if (bundle != null && bundle.getString("email") != null && bundle.getString("provider") != null){
-            Log.e("USUARIO_MENU", bundle.getString("user"));
-            SharedPreferences.Editor editor = myPreference.edit();
-            editor.putString("email", bundle.getString("email"));
-            editor.putString("provider", bundle.getString("provider"));
-            Log.e("LOGIN_HOME", bundle.getString("email"));
-            Log.e("LOGIN_HOME", bundle.getString("provider"));
-
-            editor.commit();
-            //email_user.setText(bundle.getString("email"));
-        }
-        //PARAMETROS ENVIADOS DESDE REGISTER
-        if (bundle != null && bundle.getString("name") != null && bundle.getString("lastname") != null && bundle.getString("email") != null && bundle.getString("provider") != null){
-
-            SharedPreferences.Editor editor = myPreference.edit();
-            editor.putString("email", bundle.getString("email"));
-            editor.putString("name_user", bundle.getString("name"));
-            editor.putString("lastname_user", bundle.getString("lastname"));
-            editor.putString("provider", bundle.getString("provider"));
-            Log.e("REGISTER_HOME", bundle.getString("email"));
-            Log.e("REGISTER_HOME", bundle.getString("name"));
-            Log.e("REGISTER_HOME", bundle.getString("lastname"));
-            Log.e("REGISTER_HOME", bundle.getString("provider"));
-
-            //Debe confirmar los cambios en el sharedPreferences para que se vean reflejados
-            editor.commit();
-            //email_user.setText(bundle.getString("email"));
-            //name_user.setText(bundle.getString("name") + bundle.getString("lastname"));
-        }
 
 
-        //email_user.setText("jedaga123@gmail.com");
-        //name_user.setText("Jesus Garcia");
 
-        //String usuario = myPreference.getString("email","No hay usuario");
+        View headerView = navigationView.getHeaderView(0);
 
+        TextView navUsername = headerView.findViewById(R.id.txt_name_user);
+
+
+        TextView navCorreo = headerView.findViewById(R.id.txt_email_user);
+
+        email = myPreference.getString("email", "No hay usuario");
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("usuarios").document(email);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.e("TAG", "DocumentSnapshot data: " + document.getData());
+                        nombreUser = document.getData().get("nombre").toString() + " " + document.getData().get("apellido").toString();
+                        navCorreo.setText(email);
+                        navUsername.setText(nombreUser);
+                    } else {
+                        Log.e("TAG", "No such document");
+                    }
+                } else {
+                    Log.e("TAG", "get failed with ", task.getException());
+                }
+            }
+        });
+
+        miactividad = this;
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id=menuItem.getItemId();
+                //it's possible to do more actions on several items, if there is a large amount of items I prefer switch(){case} instead of if()
+                if (id==R.id.nav_exit){
+                    Toast.makeText(getApplicationContext(), "Exit", Toast.LENGTH_SHORT).show();
+
+                    //Intent intent = new Intent(miactividad, LoginActivity.class);
+                    //startActivity(intent);
+                    drawer.closeDrawer(GravityCompat.START);
+
+                    SharedPreferences.Editor editor = myPreference.edit();
+
+                    editor.putString("email", "");
+                    editor.putString("password", "");
+
+                    FirebaseAuth.getInstance().signOut();
+
+                    //editor.clear();
+                    editor.commit();
+
+                    finish();
+                    return true;
+
+                }
+                //This is for maintaining the behavior of the Navigation view
+                NavigationUI.onNavDestinationSelected(menuItem,navController);
+                //This is for closing the drawer after acting on it
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

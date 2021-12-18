@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Market Colombia</string>
     <string name="txt_user">User name</string>
-    <string name="txt_hint_user">email@domain.com</string>
+    <string name="txt_hint_user">Email</string>
     <string name="txt_password">Password</string>
     <string name="txt_hint_password">your password</string>
     <string name="txt_login">Login</string>
@@ -32,8 +32,10 @@
     <string name="menu_search">Search</string>
     <string name="menu_myshopping">My shopping</string>
     <string name="menu_favorites">Favorites</string>
+    <string name="menu_logout">Log Out</string>
     <string name="menu_offers">Offers</string>
     <string name="menu_myaccount">My account</string>
+    <string name="menu_exit">exit</string>
 
 
     <string-array name="categories">
@@ -48,42 +50,12 @@
         <item>Games and toys</item>
     </string-array>
 
-    <string name="term_and_conditions">INFORMACIÓN RELEVANTE \n \n
-        Es requisito necesario para la adquisición de los productos que se ofrecen en este sitio, que lea y acepte los siguientes Términos y Condiciones que a continuación se redactan. El uso de nuestros servicios así como la compra de nuestros productos implicará que usted ha leído y aceptado los Términos y Condiciones de Uso en el presente documento. Todas los productos  que son ofrecidos por nuestro sitio web pudieran ser creadas, cobradas, enviadas o presentadas por una página web tercera y en tal caso estarían sujetas a sus propios Términos y Condiciones. En algunos casos, para adquirir un producto, será necesario el registro por parte del usuario, con ingreso de datos personales fidedignos y definición de una contraseña.
-        \n
-        El usuario puede elegir y cambiar la clave para su acceso de administración de la cuenta en cualquier momento, en caso de que se haya registrado y que sea necesario para la compra de alguno de nuestros productos. marketcolombia.com no asume la responsabilidad en caso de que entregue dicha clave a terceros.
-        Todas las compras y transacciones que se lleven a cabo por medio de este sitio web, están sujetas a un proceso de confirmación y verificación, el cual podría incluir la verificación del stock y disponibilidad de producto, validación de la forma de pago, validación de la factura (en caso de existir) y el cumplimiento de las condiciones requeridas por el medio de pago seleccionado. En algunos casos puede que se requiera una verificación por medio de correo electrónico.
-        Los precios de los productos ofrecidos en esta Tienda Online es válido solamente en las compras realizadas en este sitio web.
-        \n \n
-        LICENCIA \n
-        Market Colombia  a través de su sitio web concede una licencia para que los usuarios utilicen  los productos que son vendidos en este sitio web de acuerdo a los Términos y Condiciones que se describen en este documento.
-        \n \n
-        USO NO AUTORIZADO \n
-        En caso de que aplique (para venta de software, templetes, u otro producto de diseño y programación) usted no puede colocar uno de nuestros productos, modificado o sin modificar, en un CD, sitio web o ningún otro medio y ofrecerlos para la redistribución o la reventa de ningún tipo.
-        \n\n
-        PROPIEDAD \n
-        Usted no puede declarar propiedad intelectual o exclusiva a ninguno de nuestros productos, modificado o sin modificar. Todos los productos son propiedad  de los proveedores del contenido. En caso de que no se especifique lo contrario, nuestros productos se proporcionan  sin ningún tipo de garantía, expresa o implícita. En ningún esta compañía será  responsables de ningún daño incluyendo, pero no limitado a, daños directos, indirectos, especiales, fortuitos o consecuentes u otras pérdidas resultantes del uso o de la imposibilidad de utilizar nuestros productos.
-        \n\n
-        POLÍTICA DE REEMBOLSO Y GARANTÍA \n
-        En el caso de productos que sean  mercancías irrevocables no-tangibles, no realizamos reembolsos después de que se envíe el producto, usted tiene la responsabilidad de entender antes de comprarlo.  Le pedimos que lea cuidadosamente antes de comprarlo. Hacemos solamente excepciones con esta regla cuando la descripción no se ajusta al producto. Hay algunos productos que pudieran tener garantía y posibilidad de reembolso pero este será especificado al comprar el producto. En tales casos la garantía solo cubrirá fallas de fábrica y sólo se hará efectiva cuando el producto se haya usado correctamente. La garantía no cubre averías o daños ocasionados por uso indebido. Los términos de la garantía están asociados a fallas de fabricación y funcionamiento en condiciones normales de los productos y sólo se harán efectivos estos términos si el equipo ha sido usado correctamente. Esto incluye:
-        \n\n
-        – De acuerdo a las especificaciones técnicas indicadas para cada producto. \n \n
-        – En condiciones ambientales acorde con las especificaciones indicadas por el fabricante. \n \n
-        – En uso específico para la función con que fue diseñado de fábrica. \n \n
-        – En condiciones de operación eléctricas acorde con las especificaciones y tolerancias indicadas. \n \n
-
-        COMPROBACIÓN ANTIFRAUDE \n
-        La compra del cliente puede ser aplazada para la comprobación antifraude. También puede ser suspendida por más tiempo para una investigación más rigurosa, para evitar transacciones fraudulentas.
-        \n\n
-        PRIVACIDAD \n
-        Este marketcolombia.com garantiza que la fc barcelona noticias información personal que usted envía cuenta con la seguridad necesaria. Los datos ingresados por usuario o en el caso de requerir una validación de los pedidos no serán entregados a terceros, salvo que deba ser revelada en cumplimiento a una orden judicial o requerimientos legales.
-        \n\n
-        La suscripción a boletines de correos electrónicos publicitarios es voluntaria y podría ser seleccionada al momento de crear su cuenta.
-        Market Colombia reserva los derechos de cambiar o de modificar estos términos sin previo aviso.\n\n
-        Estas terminos y condiciones se han generado en terminosycondicionesdeusoejemplo.com.</string>
+    <string name="term_and_conditions">RELEVANT INFORMATION \n \n\n        It is a necessary requirement for the purchase of the products offered on this site, that you read and accept the following Terms and Conditions that are written below. The use of our services as well as the purchase of our products will imply that you have read and accepted the Terms and Conditions of Use herein. All products that are offered by our website may be created, charged, shipped or presented by a third party website and in such case would be subject to their own Terms and Conditions. In some cases, in order to purchase a product, it will be necessary for the user to register, entering reliable personal data and defining a password.\n        \n\n        The user can choose and change the password for your account management access at any time, in case you have registered and it is necessary for the purchase of any of our products. marketcolombia.com assumes no responsibility in case you give that password to third parties.\n        All purchases and transactions carried out through this website are subject to a confirmation and verification process, which may include verification of stock and product availability, validation of the payment method, validation of the invoice (if any) and compliance with the conditions required by the selected payment method. In some cases an e-mail verification may be required.\n        The prices of the products offered in this Online Store is valid only for purchases made on this website.\n        \n \n\n        LICENSE \n\n        Market Colombia through its website grants a license for users to use the products that are sold on this website according to the Terms and Conditions described in this document.\n        \n \n\n        UNAUTHORIZED USE \n\n        If applicable (for sale of software, templets, or other design and programming product) you may not place one of our products, modified or unmodified, on a CD, website or any other media and offer them for redistribution or resale of any kind.\n        \n\n\n        PROPERTY \n\n        You may not claim intellectual or exclusive ownership of any of our products, modified or unmodified. All products are the property of the content providers. Unless otherwise specified, our products are provided without warranty of any kind, express or implied. In no event shall this company be liable for any damages including, but not limited to, direct, indirect, special, incidental or consequential damages or other losses resulting from the use or inability to use our products.\n        \n\n\n        REFUND AND WARRANTY POLICY \n\n        For products that are irrevocable non-tangible goods, we do not issue refunds after the product is shipped, it is your responsibility to understand before you purchase.  We ask you to read it carefully before you buy it. We only make exceptions to this rule when the description does not match the product. There are some products that may have warranty and refund possibilities but this will be specified at the time of purchase. In such cases the warranty will only cover manufacturing faults and will only be effective when the product has been used correctly. The warranty does not cover malfunctions or damage caused by improper use. The terms of the warranty are associated with manufacturing faults and operation under normal conditions of the products and these terms will only become effective if the equipment has been used correctly. This includes:\n        \n\n\n        - According to the technical specifications indicated for each product. \n \n\n        - In environmental conditions according to the specifications indicated by the manufacturer. \n \n\n        - In specific use for the function for which it was designed at the factory. \n \n\n        - In electrical operating conditions in accordance with the specifications and tolerances indicated. \n \n\n\n        ANTI-FRAUD CHECK \n\n        The customer\'s purchase may be deferred for anti-fraud testing. It may also be further suspended for a more rigorous investigation to prevent fraudulent transactions.\n        \n\n\n        PRIVACY \n\n        This marketcolombia.com guarantees that the fc barcelona news personal information you submit has the necessary security. The data entered by user or in the case of requiring a validation of orders will not be given to third parties, unless it must be disclosed in compliance with a court order or legal requirements\n\n        Subscription to advertising email newsletters is voluntary and may be selected at the time of creating your account.\n        Market Colombia reserves the right to change or modify these terms without notice.\n\n\n        These terms and conditions have been generated at terminosycondicionesdeusoejemplo.com.\n</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="txt_buy">Buy</string>
+    <string name="txt_addcart">Add to cart</string>
+    <string name="txt_buy">Add to cart</string>
+    <string name="title_activity_mapa">MapaActivity</string>
 
 
 </resources>

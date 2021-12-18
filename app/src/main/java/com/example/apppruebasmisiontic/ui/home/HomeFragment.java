@@ -1,5 +1,6 @@
 package com.example.apppruebasmisiontic.ui.home;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -22,20 +21,24 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.apppruebasmisiontic.LoginActivity;
+import com.example.apppruebasmisiontic.ProdInformationActivity;
 import com.example.apppruebasmisiontic.R;
 import com.example.apppruebasmisiontic.RegisterProductActivity;
 import com.example.apppruebasmisiontic.databinding.FragmentHomeBinding;
-import com.example.apppruebasmisiontic.ui.util.Constantes;
+import com.example.apppruebasmisiontic.util.Constantes;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -53,17 +56,7 @@ public class HomeFragment extends Fragment {
 
     private final int ACTIVIDAD_REGISTRAR_PRODUCTO = 1;
 
-
-    String jsonProducts = "[{\"codigo\":\"01\",\"nombre\":\"Balón Fútbol\",\"informacion\":\"Uefa Champions League #5 Importado Original Ad\",\"precio\":244800,\"enstock\":2,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_806746-MCO48105554378_112021-O.webp\"}," +
-            "{\"codigo\":\"02\",\"nombre\":\"Bicicletas Roadmaster\",\"informacion\":\"Tornado Rin 29 24 Vel Shimano Palanca\",\"precio\":1840000,\"enstock\":243,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_2X_948611-MCO46721884405_072021-F.webp\"}," +
-            "{\"codigo\":\"03\",\"nombre\":\"Bolso Morral\",\"informacion\":\"Gw Hidratacion Vejiga 2l Todoterreno Ciclismo\",\"precio\":145000,\"enstock\":25,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_744194-MCO43441745237_092020-O.webp\"}," +
-            "{\"codigo\":\"04\",\"nombre\":\"Rodillera Ortopédica\",\"informacion\":\"Protección Rodilla Rotula Deportes 733\",\"precio\":15900,\"enstock\":425,\"shipping_cost\":9800,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_954304-MCO46388561710_062021-O.webp\"}," +
-            "{\"codigo\":\"05\",\"nombre\":\"Smart Gainer Proscience\",\"informacion\":\"Smart Gainer 3lb Proteina Sin Azucar\",\"precio\":70000,\"enstock\":425,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_990168-MCO44427501678_122020-O.webp\"}," +
-            "{\"codigo\":\"06\",\"nombre\":\"Patines\",\"informacion\":\"En Linea Profesionales Cougar Sr1\",\"precio\":1115000,\"enstock\":18,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_999867-MCO42008338809_052020-O.webp\"}," +
-            "{\"codigo\":\"07\",\"nombre\":\"Saco De Boxeo\",\"informacion\":\"Tula Mma Pro Punisher +guantes Mma Pro Caray\",\"precio\":125000,\"enstock\":274,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_705056-MCO43675680444_102020-O.webp\"}," +
-            "{\"codigo\":\"08\",\"nombre\":\"Caminadora\",\"informacion\":\"Trotadora Plegable Residencial Banda Electrica\",\"precio\":986000,\"enstock\":5,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_903360-MCO45394396285_032021-O.webp\"}," +
-            "{\"codigo\":\"09\",\"nombre\":\"Carpa Camuflada Pixel\",\"informacion\":\"2 Personas Asgard Camping 2x1.2\",\"precio\":64900,\"enstock\":12,\"shipping_cost\":9800,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_629303-MCO44022495069_112020-O.webp\"}," +
-            "{\"codigo\":\"10\",\"nombre\":\"Kit Mancuernas\",\"informacion\":\"20 Kilos 2 Pesas Maletin Transporte\",\"precio\":154000,\"enstock\":125,\"shipping_cost\":0,\"imagen\":\"https://http2.mlstatic.com/D_NQ_NP_909304-MCO47650383331_092021-O.webp\"}]";
+    FirebaseFirestore db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -105,6 +98,9 @@ public class HomeFragment extends Fragment {
                 }
             }
         });*/
+
+        //Llamando el adaptador mediante el json manual
+        /*
         try {
             JSONArray products = new JSONArray(jsonProducts);
             mAdapter = new ProductsAdapter(products, getActivity());
@@ -112,7 +108,7 @@ public class HomeFragment extends Fragment {
             rev_products.setAdapter(mAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
 /*
         String jsonProductos = "[{\"nombre\":\"Balón\",\"precio\":50000,\"enstock\":true,\"sucursales\":[{\"nombre\":\"Sucursal A\",\"area\":100,\"encargado\":{\"nombre\":\"Encargado 1\"}},{\"nombre\":\"Sucursal B\",\"area\":200,\"encargado\":{\"nombre\":\"Encargado 2\"}}]},{\"nombre\":\"Guantes\",\"precio\":40000,\"enstock\":false,\"sucursales\":[{\"nombre\":\"Sucursal C\",\"area\":50,\"encargado\":{\"nombre\":\"Encargado 3\"}},{\"nombre\":\"Sucursal D\",\"area\":45,\"encargado\":{\"nombre\":\"Encargado 4\"}}]}]";
@@ -134,8 +130,75 @@ public class HomeFragment extends Fragment {
 
         } catch (JSONException e) {
             e.printStackTrace();
+
         }
+
 */
+        db = FirebaseFirestore.getInstance();
+        db.collection("productos")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            JSONArray productos = new JSONArray();
+
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.e("TAG", document.getId() + " => " + document.getData());
+
+                                String codigo = document.getId();
+                                String nombre = document.getData().get("nombre").toString();
+                                String categoria = document.getData().get("categoria").toString();
+                                String descripcion = document.getData().get("descripcion").toString();
+                                int precio = Integer.parseInt(document.getData().get("precio").toString());
+                                int enstock = Integer.parseInt(document.getData().get("enstock").toString());
+                                String imagen = document.getData().get("imagen").toString();
+
+                                Double latitud;
+                                Double longitud;
+                                try {
+                                    latitud = Double.parseDouble(document.getData().get("latitud").toString());
+                                    longitud = Double.parseDouble(document.getData().get("longitud").toString());
+                                } catch (Exception e) {
+                                    latitud = 0.0;
+                                    longitud = 0.0;
+                                }
+
+
+                                JSONObject producto = new JSONObject();
+                                try {
+                                    producto.put("codigo", codigo);
+                                    producto.put("nombre", nombre);
+                                    producto.put("categoria", categoria);
+                                    producto.put("descripcion", descripcion);
+                                    producto.put("precio", precio);
+                                    producto.put("enstock", enstock);
+                                    producto.put("imagen", imagen);
+                                    producto.put("latitud", latitud);
+                                    producto.put("longitud", longitud);
+
+                                    productos.put(producto);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+
+
+                            }
+
+                            mAdapter = new ProductsAdapter(productos, getActivity());
+                            rev_products.setAdapter(mAdapter);
+
+                        } else {
+                            Log.e("TAG", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,7 +206,8 @@ public class HomeFragment extends Fragment {
                         .setAction("Action", null).show();
 
                 Intent intent = new Intent(getActivity(), RegisterProductActivity.class);
-                getActivity().startActivityForResult(intent,ACTIVIDAD_REGISTRAR_PRODUCTO);
+                //getActivity().startActivityForResult(intent,ACTIVIDAD_REGISTRAR_PRODUCTO);
+                getActivity().startActivity(intent);
 
             }
         });
@@ -183,10 +247,68 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
     private Activity myActivity;
     private SharedPreferences myPreference;
 
+    private JSONArray favoritos;
+    private JSONArray carritoCompras;
+    private final String SHARED_FAVORITOS = "FAVORITOS";
+    private final String SHARED_CARRITO = "CARRO_COMPRAS";
+
     //Contructor
     public ProductsAdapter(JSONArray products, Activity myActivity) {
         this.products = products;
         this.myActivity = myActivity;
+        this.myPreference = myActivity.getSharedPreferences(Constantes.PREFERENCE, Context.MODE_PRIVATE);
+        try {
+            this.favoritos = new JSONArray(myPreference.getString(SHARED_FAVORITOS, "[]"));
+            this.carritoCompras = new JSONArray(myPreference.getString(SHARED_CARRITO, "[]"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean esFavorito(String codigo) {
+        for (int i = 0; i < favoritos.length(); i++) {
+            try {
+                JSONObject favorito = favoritos.getJSONObject(i);
+                if (favorito.getString("codigo").equals(codigo)) {
+                    return true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+    public boolean estaEnElCarrito(String codigo) {
+        for (int i = 0; i < carritoCompras.length(); i++) {
+            try {
+                JSONObject carroC = carritoCompras.getJSONObject(i);
+                if (carroC.getString("codigo").equals(codigo)) {
+                    return true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
+    public void eliminarProductoFavorito(String codigo) {
+        for (int i = 0; i < favoritos.length(); i++) {
+            try {
+                JSONObject favorito = favoritos.getJSONObject(i);
+
+                if (favorito.getString("codigo").equals(codigo)) {
+                    favoritos.remove(i);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        SharedPreferences.Editor editor = myPreference.edit();
+        editor.putString(SHARED_FAVORITOS, favoritos.toString());
+        editor.commit();
     }
 
 
@@ -197,13 +319,12 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
         return viewHolder;
     }
 
-    //Agarra el JSon y pinta la información en el view
+    //Agarra el JSON y pinta la información en el view
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         //Obtengo el string de preferencias
         myPreference = myActivity.getSharedPreferences(Constantes.PREFERENCE, Context.MODE_PRIVATE);
-        String stringFavorites = myPreference.getString("favorites","{\"values\":[]}");
 
         try {
             Log.e("POS_rec", "POS: " + position);
@@ -212,18 +333,16 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
             String imagen = products.getJSONObject(position).getString("imagen");
             int precio = products.getJSONObject(position).getInt("precio");
             int stock = products.getJSONObject(position).getInt("enstock");
-            int shipping_cost = products.getJSONObject(position).getInt("shipping_cost");
+            //int shipping_cost = products.getJSONObject(position).getInt("shipping_cost");
 
 
             holder.txt_name_product.setText(nombre);
             holder.txt_price_product.setText("$ " + precio);
 
-            if(stringFavorites.indexOf(codigo) == -1){
-                holder.btn_favorite.setImageResource(R.drawable.ic_favorite_border);
-            }
-            else{
-                holder.btn_favorite.setImageResource(R.drawable.ic_favorite);
-            }
+            if (esFavorito(codigo))
+                holder.btn_favorite.setImageDrawable(myActivity.getDrawable(R.drawable.ic_favorite));
+
+
             Glide.with(myActivity).load(imagen)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.img_product);
@@ -234,10 +353,46 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
             else
                 holder.txt_stock.setText(stock + " en stock");
             //State send
-            if (shipping_cost == 0)
+            /*if (shipping_cost == 0)
                 holder.txt_state_send.setText("Envio Gratis");
             else
                 holder.txt_state_send.setText("Costo del envio: " + shipping_cost);
+*/
+            holder.img_product.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    try {
+                        Log.e("CLICK_IMAGE", products.getJSONObject(position).toString());
+                        Intent intent = new Intent(myActivity, ProdInformationActivity.class);
+                        intent.putExtra("producto", products.getJSONObject(position).toString());
+                        myActivity.startActivity(intent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+
+            holder.btn_add_cart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        JSONArray carritoCom = new JSONArray(myPreference.getString(SHARED_CARRITO, "[]"));
+                        if(estaEnElCarrito(codigo)) {
+                            Toast.makeText(myActivity, "Producto ya agregado al carrito", Toast.LENGTH_SHORT).show();
+                        } else {
+                            carritoCom.put(products.getJSONObject(position));
+                            SharedPreferences.Editor editor = myPreference.edit();
+                            editor.putString(SHARED_CARRITO, carritoCom.toString());
+                            editor.commit();
+                            Toast.makeText(myActivity, "Agregado con exito", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
 
             //https://developer.android.com/guide/topics/ui/controls/button?hl=es-419
             holder.btn_favorite.setOnClickListener(new View.OnClickListener() {
@@ -245,40 +400,18 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
                 public void onClick(View v) {
 
                     try {
-                        JSONArray jsonFavorites = new JSONObject(stringFavorites).getJSONArray("values");
+                        JSONArray favoritos = new JSONArray(myPreference.getString(SHARED_FAVORITOS, "[]"));
 
-                        if(stringFavorites.indexOf(codigo) == -1){
-                            //Añado al json el codigo del objeto al que le dio favorito
-                            jsonFavorites.put(codigo);
-                            //Convierto de nuevo el JSON a string
-                            String favorites = new Gson().toJson(jsonFavorites);
-
-                            //Modifico y guardo el string en las preferencias
+                        if(esFavorito(codigo)) {
+                            eliminarProductoFavorito(codigo);
+                            holder.btn_favorite.setImageDrawable(myActivity.getDrawable(R.drawable.ic_favorite_border));
+                        } else {
+                            favoritos.put(products.getJSONObject(position));
                             SharedPreferences.Editor editor = myPreference.edit();
-                            editor.putString("favorites", favorites);
-
-                            //Debe confirmar los cambios en el sharedPreferences para que se vean reflejados
+                            editor.putString(SHARED_FAVORITOS, favoritos.toString());
                             editor.commit();
-
-                            holder.btn_favorite.setImageResource(R.drawable.ic_favorite);
+                            holder.btn_favorite.setImageDrawable(myActivity.getDrawable(R.drawable.ic_favorite));
                         }
-                        else{
-                            for(int i= 0; i < jsonFavorites.length(); i++){
-
-                                if(jsonFavorites.getString(i).equals(codigo)){
-                                    jsonFavorites.remove(i);
-
-                                    //Convierto de nuevo el JSON a string
-                                    String favorites = new Gson().toJson(jsonFavorites);
-
-                                    SharedPreferences.Editor editor = myPreference.edit();
-                                    editor.putString("favorites", favorites);
-                                    editor.commit();
-                                }
-                            }
-                            holder.btn_favorite.setImageResource(R.drawable.ic_favorite_border);
-                        }
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -304,9 +437,8 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
         private TextView txt_name_product;
         private TextView txt_price_product;
         private TextView txt_stock;
-        private TextView txt_state_send;
         private ImageButton btn_favorite;
-        private Button btn_buy;
+        private Button btn_add_cart;
         private ImageView img_product;
 
 
@@ -315,9 +447,8 @@ class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
             txt_name_product = v.findViewById(R.id.txt_name_product);
             txt_price_product = v.findViewById(R.id.txt_price_product);
             txt_stock = v.findViewById(R.id.txt_stock);
-            txt_state_send = v.findViewById(R.id.txt_state_send);
             btn_favorite = v.findViewById(R.id.btn_favorite);
-            btn_buy = v.findViewById(R.id.btn_buy);
+            btn_add_cart = v.findViewById(R.id.btn_add_cart);
             img_product = v.findViewById(R.id.img_product);
 
         }
